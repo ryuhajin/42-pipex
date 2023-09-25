@@ -1,6 +1,6 @@
 CC = cc
 
-CFLAG = -Wall -Werror -Wextra
+CFLAG = -Wall -Werror -Wextra -g
 
 NAME = pipex
 

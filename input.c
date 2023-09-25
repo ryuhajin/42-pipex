@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/25 18:36:43 by dayou            ###   ########.fr       */
+/*   Updated: 2023/09/25 22:21:54 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ int make_input_node (t_input ** node, int argc, char ** argv, char ** envp)
 	*node = (t_input *)malloc(sizeof(t_input) * 1);
 	if (*node == NULL)
 		return failed;
+	(*node)->file_path = (char **)malloc(sizeof(char *) * argc);
+	if ((*node)->file_path == NULL)
+		return failed;
+	(*node)->file_path[argc] = NULL;
 	envp_path = search_path(envp);
 	if (envp_path == NULL)
 		return failed;
@@ -85,3 +89,41 @@ char * search_path (char ** envp)
 	return NULL;
 }
 
+void temp_free (char *temp, char *temp_file_path)
+{
+	free(temp);
+	free(temp_file_path);
+}
+
+int check_cmd_file (char ***input_cmd, char **path, char ** file_path)
+{
+	char * temp;
+	char * temp_file_path;
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (input_cmd[i])
+	{
+		j = 0;
+		while (path[j])
+		{
+			temp = ft_strjoin(path[j], "/");
+			temp_file_path = ft_strjoin(temp, *(input_cmd[i]));
+			if (access(temp_file_path, F_OK) == success)
+			{
+				file_path[i] = temp_file_path;
+				free(temp);
+				break;
+			}
+			else
+				temp_free(temp, temp_file_path);
+			j++;
+		}
+		if (path[j] == NULL)
+			return failed;
+		i++;
+	}
+	return success;
+}
