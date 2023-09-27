@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/25 20:39:19 by dayou            ###   ########.fr       */
+/*   Updated: 2023/09/27 19:18:41 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 
 typedef enum e_status
 {
@@ -34,5 +35,6 @@ int argv_split (t_input * node, int argc, char ** argv);
 int make_input_node (t_input ** node, int argc, char ** argv, char ** envp);
 char * search_path (char ** envp);
 void temp_free (char *temp, char *temp_file_path);
-int check_cmd_file (char ***input_cmd, char **path, char ** file_path);
-
+int check_cmd_file (char ***input_cmd, char **path, char ** file_path, int i);
+void check_handler(t_input * node);
+int make_child(int * fd, t_input * node, char ** envp);

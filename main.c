@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:07 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/25 21:58:17 by dayou            ###   ########.fr       */
+/*   Updated: 2023/09/27 22:06:56 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,20 @@ void file_path_print(t_input * node)
 	}
 }
 
-int main(int argc, char * argv[], char ** envp)
+int main (int argc, char * argv[], char ** envp)
 {
+	int fd[2];
 	t_input * node;
 	
 	if (argc != 5)
-		return 0;
-	
-	return 0;
+		return 0;	
+	if (pipe(fd) == failed)
+		exit(1); //error exit
+	if (make_input_node(&node, argc, argv, envp) == failed)
+		exit(1); // input malloc error
+	cmd_print(node);
+	path_print(node);
+	file_path_print(node);
+	make_child(fd, node, envp);
+	return (0);
 }

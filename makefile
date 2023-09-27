@@ -4,7 +4,7 @@ CFLAG = -Wall -Werror -Wextra -g
 
 NAME = pipex
 
-SRCS = main.c input.c
+SRCS = main.c input.c fork.c
 
 OBJS = $(SRCS:.c=.o)
 

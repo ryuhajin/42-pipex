@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/25 22:21:54 by dayou            ###   ########.fr       */
+/*   Updated: 2023/09/27 18:59:50 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int make_input_node (t_input ** node, int argc, char ** argv, char ** envp)
 		return failed;
 	if (argv_split(*node, argc, argv) == failed)
 		return failed;
+	check_handler(*node);
 	return success;
 }
 
@@ -95,35 +96,43 @@ void temp_free (char *temp, char *temp_file_path)
 	free(temp_file_path);
 }
 
-int check_cmd_file (char ***input_cmd, char **path, char ** file_path)
+int check_cmd_file (char ***input_cmd, char **path, char ** file_path, int i)
 {
 	char * temp;
 	char * temp_file_path;
-	int i;
 	int j;
 
-	i = 0;
 	j = 0;
-	while (input_cmd[i])
+	while (path[j])
 	{
-		j = 0;
-		while (path[j])
+		temp = ft_strjoin(path[j], "/"); //join 할 때마다 malloc 체크 해줘야하는가???
+		temp_file_path = ft_strjoin(temp, *(input_cmd[i]));
+		if (access(temp_file_path, F_OK) == success)
 		{
-			temp = ft_strjoin(path[j], "/");
-			temp_file_path = ft_strjoin(temp, *(input_cmd[i]));
-			if (access(temp_file_path, F_OK) == success)
-			{
-				file_path[i] = temp_file_path;
-				free(temp);
-				break;
-			}
-			else
-				temp_free(temp, temp_file_path);
-			j++;
+			file_path[i] = temp_file_path;
+			free(temp);
+			break;
 		}
-		if (path[j] == NULL)
-			return failed;
+		else
+			temp_free(temp, temp_file_path);
+		j++;
+	}
+	if (path[j] == NULL)
+		return failed;
+	return success;
+}
+
+void check_handler(t_input * node)
+{
+	int i;
+	i = 0;
+
+	while (node->cmd[i])
+	{
+		if(check_cmd_file(node->cmd, node->path, node->file_path, i) == failed)
+			node->file_path[i] = ft_strdup(*(node->cmd[i]));
 		i++;
 	}
-	return success;
+
+	//권한 확인 와일문 만들기
 }
