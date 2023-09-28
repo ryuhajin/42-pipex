@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:07 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/27 22:06:56 by dayou            ###   ########.fr       */
+/*   Updated: 2023/09/28 15:30:19 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void cmd_print (t_input * node)
 		j = 0;
 		while(print[i][j])
 		{
-			printf("cmd : %s", print[i][j]);
+			printf("cmd %d : %s", i, print[i][j]);
 			printf("\n");
 			j++;
 		}
