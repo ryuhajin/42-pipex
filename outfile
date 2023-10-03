@@ -1,13 +1,1 @@
-total 200
--rw-r--r--   1 dayou  2023_seoul   2086 Sep 28 15:37 fork.c
--rw-r--r--   1 dayou  2023_seoul   4332 Sep 28 15:37 fork.o
--rw-r--r--   1 dayou  2023_seoul   3163 Sep 27 18:59 input.c
--rw-r--r--   1 dayou  2023_seoul   6144 Sep 28 15:27 input.o
-drwxr-xr-x  82 dayou  2023_seoul   2788 Sep 28 15:27 libft
--rw-r--r--   1 dayou  2023_seoul   1869 Sep 28 15:30 main.c
--rw-r--r--   1 dayou  2023_seoul   4612 Sep 28 15:30 main.o
--rw-r--r--   1 dayou  2023_seoul    454 Sep 27 19:19 makefile
--rw-r--r--   1 dayou  2023_seoul      0 Sep 28 15:38 outfile
--rwxr-xr-x   1 dayou  2023_seoul  52368 Sep 28 15:37 pipex
--rw-r--r--   1 dayou  2023_seoul   1657 Sep 27 19:18 pipex.h
--rw-r--r--   1 dayou  2023_seoul   2144 Sep 27 18:12 test.c
+meow

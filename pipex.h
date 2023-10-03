@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/27 19:18:41 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/03 23:35:07 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ typedef enum e_status
 
 typedef struct input
 {
-	char *** cmd;
+	char *** argv;
     char ** path;
 	char ** file_path; //file_path[argc]
+    int ** fd;
 } t_input;
 
 int	split_start(int argc, char **argv, char **splits[]);
@@ -37,4 +38,8 @@ char * search_path (char ** envp);
 void temp_free (char *temp, char *temp_file_path);
 int check_cmd_file (char ***input_cmd, char **path, char ** file_path, int i);
 void check_handler(t_input * node);
-int make_child(int * fd, t_input * node, char ** envp);
+int make_child(int argc, t_input * node, char ** envp);
+int make_pipes (int argc, t_input * node);
+void close_fd_all (int total_pipes, t_input * node);
+void close_fd (int total_pipes, int proc_idx, t_input * node);
+int fd_handler (int total_pipes, int proc_idx, t_input * node);

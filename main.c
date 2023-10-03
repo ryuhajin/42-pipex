@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:07 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/28 15:30:19 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/04 00:12:37 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void cmd_print (t_input * node)
 	int i;
 	int j;
 	
-	print = node->cmd;
+	print = node->argv;
 	i = 0;
 	j = 0;
 	while (print[i])
@@ -26,7 +26,7 @@ void cmd_print (t_input * node)
 		j = 0;
 		while(print[i][j])
 		{
-			printf("cmd %d : %s", i, print[i][j]);
+			printf("argv %d : %s", i, print[i][j]);
 			printf("\n");
 			j++;
 		}
@@ -68,16 +68,16 @@ int main (int argc, char * argv[], char ** envp)
 {
 	int fd[2];
 	t_input * node;
-	
-	if (argc != 5)
-		return 0;	
+
 	if (pipe(fd) == failed)
 		exit(1); //error exit
+	// heredoc 처리, 인자를 히어독 파일이름으로 바꿈
+	// cmd 한개일때 처리.
 	if (make_input_node(&node, argc, argv, envp) == failed)
 		exit(1); // input malloc error
-	cmd_print(node);
-	path_print(node);
-	file_path_print(node);
-	make_child(fd, node, envp);
+	// cmd_print(node);
+	// path_print(node);
+	// file_path_print(node);
+	make_child(argc, node, envp);
 	return (0);
 }

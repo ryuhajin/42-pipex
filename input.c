@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/09/27 18:59:50 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/04 00:33:50 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int argv_split (t_input * node, int argc, char ** argv)
 		return failed;
 	if (!split_start(argc, argv, splits))
 	{	
-		node->cmd = splits;
+		node->argv = splits;
 		return success;
 	}
 	return failed;
@@ -127,10 +127,10 @@ void check_handler(t_input * node)
 	int i;
 	i = 0;
 
-	while (node->cmd[i])
+	while (node->argv[i])
 	{
-		if(check_cmd_file(node->cmd, node->path, node->file_path, i) == failed)
-			node->file_path[i] = ft_strdup(*(node->cmd[i]));
+		if(check_cmd_file(node->argv, node->path, node->file_path, i) == failed)
+			node->file_path[i] = ft_strdup(*(node->argv[i]));
 		i++;
 	}
 
