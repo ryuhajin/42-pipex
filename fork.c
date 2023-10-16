@@ -6,7 +6,7 @@
 /*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 18:36:53 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/03 23:35:06 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/15 21:16:38 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,12 @@ int make_child(int argc, t_input * node, char ** envp)
 		pid = fork();
 		if (pid == 0)
 		{
-			printf(">>[child] : %d %s\n", proc_idx, node->file_path[proc_idx+1]);
+			if (node->file_path[proc_idx + 1][0] == '\0')
+			{
+				//printf("%s not found file\n");
+				exit(1);
+			}
+			//printf(">>[child] : %d %s\n", proc_idx, node->file_path[proc_idx+1]);
 			close_fd(argc -4, proc_idx, node);
 			if (fd_handler(argc -4, proc_idx, node) == failed)
 				exit(1);

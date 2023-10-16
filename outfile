@@ -1,1 +1,19 @@
-meow
+total 208
+drwxr-xr-x@  2 u_u  staff     64 Oct 13 16:54 bonus
+-rw-r--r--   1 u_u  staff   1539 Oct 15 21:16 fork.c
+-rw-r--r--   1 u_u  staff   3464 Oct 15 21:26 fork.o
+-rw-r--r--   1 u_u  staff      0 Oct 13 19:35 infile
+-rw-r--r--   1 u_u  staff   3621 Oct 15 21:12 input.c
+-rw-r--r--   1 u_u  staff   7328 Oct 15 21:13 input.o
+drwxr-xr-x  82 u_u  staff   2624 Oct 15 21:09 libft
+-rw-r--r--   1 u_u  staff   2114 Oct 13 17:31 main.c
+-rw-r--r--   1 u_u  staff   5016 Oct 15 21:09 main.o
+-rw-r--r--   1 u_u  staff    461 Oct  3 21:00 makefile
+-rw-r--r--   1 u_u  staff   4766 Oct 13 19:33 memo
+-rw-r--r--   1 u_u  staff      0 Oct 13 19:37 nofile
+-rw-r--r--   1 u_u  staff      0 Oct 15 21:28 outfile
+-rw-r--r--   1 u_u  staff   3434 Oct 15 21:28 pipe.c
+-rw-r--r--   1 u_u  staff   6328 Oct 15 21:28 pipe.o
+-rwxr-xr-x   1 u_u  staff  37506 Oct 15 21:28 pipex
+-rw-r--r--   1 u_u  staff   1906 Oct 13 17:26 pipex.h
+-rw-r--r--   1 u_u  staff   2409 Oct 13 18:36 test

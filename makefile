@@ -6,7 +6,11 @@ NAME = pipex
 
 SRCS = main.c input.c fork.c pipe.c
 
+SRCS_BONUS = ./bonus/main.c
+
 OBJS = $(SRCS:.c=.o)
+
+OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
 LIBFT_DIR = ./libft/ 
 
@@ -18,6 +22,10 @@ $(NAME) : $(OBJS)
 
 %.o : %.c
 	 $(CC) $(CFLAG) -c $^ -o $@
+
+bonus : $(OBJS_BONUS)
+		make all -C $(LIBFT_DIR)
+		$(CC) $(CFLAG) -L./libft -lft $(OBJS_BONUS) -o $(NAME)
 
 clean : 
 		rm -rf $(OBJS)

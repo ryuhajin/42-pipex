@@ -6,7 +6,7 @@
 /*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/04 00:32:13 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/15 21:29:34 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,55 +63,64 @@ void close_fd (int total_pipes, int proc_idx, t_input * node)
     }
 }
 
-int fd_handler (int total_pipes, int proc_idx, t_input * node)
+void first_pipe (int total_pipes, t_input * node)
 {
     int tmp;
 
+    tmp = open(*node->argv[0], O_RDONLY);
+    if (tmp == -1) // 명령어가 하나일때 (proc 1)
+    {
+        if (total_pipes != 0)
+        {
+            close(node->fd[0][1]);
+            close(node->fd[0][0]);
+        }
+        printf("no such file or directory: %s\n", *node->argv[0]);
+		return;
+    }
+    dup2(tmp, STDIN_FILENO);
+    close(tmp);
+    dup2(node->fd[0][1], STDOUT_FILENO);
+    close(node->fd[0][1]);
+    close(node->fd[0][0]);
+}
+
+void middle_pipes(int proc_idx, t_input * node)
+{
+    dup2(node->fd[proc_idx -1][0], STDIN_FILENO);
+    close(node->fd[proc_idx -1][0]);
+    close(node->fd[proc_idx -1][1]);
+    dup2(node->fd[proc_idx][1], STDOUT_FILENO);
+    close(node->fd[proc_idx][1]);
+    close(node->fd[proc_idx][0]);
+}
+
+void last_pipe(int proc_idx, t_input * node)
+{
+    int tmp;
+    
+    tmp = open(*node->argv[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (tmp == -1)
+    {
+        close(node->fd[proc_idx -1][0]);
+        close(node->fd[proc_idx -1][1]);
+        printf("no such file or directory: %s\n", *node->argv[proc_idx + 2]);
+		return;
+    }
+    dup2(node->fd[proc_idx -1][0], STDIN_FILENO);
+    close(node->fd[proc_idx -1][0]);
+    close(node->fd[proc_idx -1][1]);
+    dup2(tmp, STDOUT_FILENO);
+    close(tmp);
+}
+
+int fd_handler (int total_pipes, int proc_idx, t_input * node)
+{
     if (proc_idx == 0)
-    {
-        tmp = open(*node->argv[0], O_RDONLY);
-        if (tmp == -1) // 명령어가 하나일때 (proc 1)
-        {
-            if (total_pipes != 0)
-            {
-                close(node->fd[0][1]);
-                close(node->fd[0][0]);
-            }
-            printf("no such file or directory: %s\n", *node->argv[0]);
-			return (failed);
-        }
-        dup2(tmp, STDIN_FILENO);
-        close(tmp);
-        dup2(node->fd[0][1], STDOUT_FILENO);
-        close(node->fd[0][1]);
-        close(node->fd[0][0]);
-    }
+        first_pipe(total_pipes, node);
     else if (proc_idx == total_pipes)
-    {
-        printf(">>[debug - last] %d\n", proc_idx);
-        tmp = open(*node->argv[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (tmp == -1)
-        {
-            close(node->fd[proc_idx -1][0]);
-            close(node->fd[proc_idx -1][1]);
-            printf("no such file or directory: %s\n", *node->argv[proc_idx + 2]);
-			return (failed);
-        }
-        dup2(node->fd[proc_idx -1][0], STDIN_FILENO);
-        close(node->fd[proc_idx -1][0]);
-        close(node->fd[proc_idx -1][1]);
-        dup2(tmp, STDOUT_FILENO);
-        close(tmp);
-    }
+        last_pipe(proc_idx, node);
     else
-    {
-        printf(">>[debug - mid] %d\n", proc_idx);
-        dup2(node->fd[proc_idx -1][0], STDIN_FILENO);
-        close(node->fd[proc_idx -1][0]);
-        close(node->fd[proc_idx -1][1]);
-        dup2(node->fd[proc_idx][1], STDOUT_FILENO);
-        close(node->fd[proc_idx][1]);
-        close(node->fd[proc_idx][0]);
-    }
+        middle_pipes(proc_idx, node);
     return success;
 }

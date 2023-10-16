@@ -6,12 +6,29 @@
 /*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/04 00:33:50 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/15 21:43:42 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "pipex.h"
 # include "./libft/libft.h"
+
+int argv_null_check (char * argv[], int argc)
+{
+	int i;
+	i = 1;
+	while (i < argc)
+	{
+		printf("%s %d\n", argv[i], i);
+		if (*argv[i] == '\0')
+		{
+			printf("input errer");
+			return failed;
+		}
+		i++;
+	}
+	return success;
+}
 
 int	split_start(int argc, char **argv, char **splits[])
 {
@@ -68,7 +85,7 @@ int make_input_node (t_input ** node, int argc, char ** argv, char ** envp)
 		return failed;
 	if (argv_split(*node, argc, argv) == failed)
 		return failed;
-	check_handler(*node);
+	check_handler(*node, argc);
 	return success;
 }
 
@@ -96,7 +113,7 @@ void temp_free (char *temp, char *temp_file_path)
 	free(temp_file_path);
 }
 
-int check_cmd_file (char ***input_cmd, char **path, char ** file_path, int i)
+int check_argv_file (char ***argv, char **path, char ** file_path, int i)
 {
 	char * temp;
 	char * temp_file_path;
@@ -106,10 +123,11 @@ int check_cmd_file (char ***input_cmd, char **path, char ** file_path, int i)
 	while (path[j])
 	{
 		temp = ft_strjoin(path[j], "/"); //join 할 때마다 malloc 체크 해줘야하는가???
-		temp_file_path = ft_strjoin(temp, *(input_cmd[i]));
+		temp_file_path = ft_strjoin(temp, *(argv[i]));
 		if (access(temp_file_path, F_OK) == success)
 		{
 			file_path[i] = temp_file_path;
+			printf("file %s \n", file_path[i]);
 			free(temp);
 			break;
 		}
@@ -122,17 +140,32 @@ int check_cmd_file (char ***input_cmd, char **path, char ** file_path, int i)
 	return success;
 }
 
-void check_handler(t_input * node)
+int check_argv_directory (t_input * node, int i)
+{
+	const char * path = "./";
+	const char * path2 = "../";
+
+	if (*(node->argv[i][0]) == '/')
+		return success;
+	if (ft_strnstr(*(node->argv[i]), path, 2))
+		return success;
+	if (ft_strnstr(*(node->argv[i]), path2, 3))
+		return success;
+	return failed;
+}
+
+void check_handler(t_input * node, int argc)
 {
 	int i;
 	i = 0;
 
-	while (node->argv[i])
+	while (i < argc-1)
 	{
-		if(check_cmd_file(node->argv, node->path, node->file_path, i) == failed)
+		if (check_argv_directory(node, i) == success)
 			node->file_path[i] = ft_strdup(*(node->argv[i]));
+		else if(check_argv_file(node->argv, node->path, node->file_path, i) == failed)
+			node->file_path[i] = ft_strdup(""); // no path file
 		i++;
 	}
-
 	//권한 확인 와일문 만들기
 }
