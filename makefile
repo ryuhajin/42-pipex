@@ -1,12 +1,15 @@
 CC = cc
 
-CFLAG = -Wall -Werror -Wextra -g
+# SANITIZE = -fsanitize=address
+CFLAG = -Wall -Werror -Wextra -g $(SANITIZE)
 
 NAME = pipex
 
 SRCS = main.c input.c fork.c pipe.c
 
-SRCS_BONUS = ./bonus/main.c
+SRCS_BONUS = ./bonus/main_bonus.c ./bonus/input_bonus.c ./bonus/fork_bonus.c \
+			./bonus/pipe_bonus.c ./bonus/read_line_bonus.c ./bonus/read_line_bonus2.c \
+			./bonus/print_bonus.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -29,6 +32,7 @@ bonus : $(OBJS_BONUS)
 
 clean : 
 		rm -rf $(OBJS)
+		rm -rf $(OBJS_BONUS)
 		make fclean -C $(LIBFT_DIR)
 
 fclean : clean 

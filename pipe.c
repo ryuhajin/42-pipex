@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/15 21:29:34 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/16 21:05:58 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void last_pipe(int proc_idx, t_input * node)
     close(tmp);
 }
 
-int fd_handler (int total_pipes, int proc_idx, t_input * node)
+int pipes_setting (int total_pipes, int proc_idx, t_input * node)
 {
     if (proc_idx == 0)
         first_pipe(total_pipes, node);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/15 21:43:42 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/16 22:37:32 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@ int argv_null_check (char * argv[], int argc)
 	i = 1;
 	while (i < argc)
 	{
-		printf("%s %d\n", argv[i], i);
 		if (*argv[i] == '\0')
 		{
-			printf("input errer");
+			printf("input error");
 			return failed;
 		}
 		i++;
@@ -30,7 +29,7 @@ int argv_null_check (char * argv[], int argc)
 	return success;
 }
 
-int	split_start(int argc, char **argv, char **splits[])
+int	argv_split(int argc, char **argv, char **splits[])
 {
 	char	**temp;
 	int		i;
@@ -47,61 +46,40 @@ int	split_start(int argc, char **argv, char **splits[])
 		i++;
 		j++;
 	}
-	splits[j] = NULL;
 	return (success);
-}
-
-int argv_split (t_input * node, int argc, char ** argv)
-{
-	char	***splits;
-
-	splits = malloc(sizeof(char *) * argc);
-	if (splits == NULL)
-		return failed;
-	if (!split_start(argc, argv, splits))
-	{	
-		node->argv = splits;
-		return success;
-	}
-	return failed;
 }
 
 int make_input_node (t_input ** node, int argc, char ** argv, char ** envp)
 {
-	char * envp_path;
-	
 	*node = (t_input *)malloc(sizeof(t_input) * 1);
 	if (*node == NULL)
 		return failed;
 	(*node)->file_path = (char **)malloc(sizeof(char *) * argc);
 	if ((*node)->file_path == NULL)
 		return failed;
-	(*node)->file_path[argc] = NULL;
-	envp_path = search_path(envp);
-	if (envp_path == NULL)
-		return failed;
-	(*node)->path = ft_split(envp_path, ':');
+	(*node)->file_path[argc - 1] = NULL;
+	(*node)->path = ft_split(search_path_from_env(envp), ':');
 	if ((*node)->path == NULL)
 		return failed;
-	if (argv_split(*node, argc, argv) == failed)
+	(*node)->argv = malloc(sizeof(char *) * argc);
+	if ((*node)->argv == NULL)
 		return failed;
-	check_handler(*node, argc);
+	(*node)->argv[argc -1] = NULL;
+	if (argv_split(argc, argv, (*node)->argv) == failed) // 이름 바꾸기
+		return failed;
+	make_file_path(*node, argc);
 	return success;
 }
 
-char * search_path (char ** envp)
+char * search_path_from_env(char ** envp)
 {
 	int i;
-	char * path;
 
 	i = 0;
 	while (envp[i])
 	{
 		if (!ft_strncmp("PATH=", envp[i], 5))
-		{
-			path = ft_strdup(envp[i] + 5);
-			return path;
-		}
+			return envp[i] + 5;
 		i++;
 	}
 	return NULL;
@@ -113,7 +91,7 @@ void temp_free (char *temp, char *temp_file_path)
 	free(temp_file_path);
 }
 
-int check_argv_file (char ***argv, char **path, char ** file_path, int i)
+int finds_argv_in_env_path (char ***argv, char **path, char ** file_path, int i)
 {
 	char * temp;
 	char * temp_file_path;
@@ -127,7 +105,7 @@ int check_argv_file (char ***argv, char **path, char ** file_path, int i)
 		if (access(temp_file_path, F_OK) == success)
 		{
 			file_path[i] = temp_file_path;
-			printf("file %s \n", file_path[i]);
+			// printf("file %s \n", file_path[i]);
 			free(temp);
 			break;
 		}
@@ -154,18 +132,37 @@ int check_argv_directory (t_input * node, int i)
 	return failed;
 }
 
-void check_handler(t_input * node, int argc)
+int starts_with_directory(char *str)
+{
+	const char * path = "./";
+	const char * path2 = "../";
+
+	if (str[0] == '/')
+		return success;
+	if (ft_strnstr(str, path, 2))
+		return success;
+	if (ft_strnstr(str, path2, 3))
+		return success;
+	return failed;
+}
+
+void make_file_path(t_input * node, int argc)
 {
 	int i;
 	i = 0;
 
-	while (i < argc-1)
+	while (node->argv[i])
 	{
-		if (check_argv_directory(node, i) == success)
+		if (i == 0 || i == argc-1)
+		{
 			node->file_path[i] = ft_strdup(*(node->argv[i]));
-		else if(check_argv_file(node->argv, node->path, node->file_path, i) == failed)
-			node->file_path[i] = ft_strdup(""); // no path file
+			i++;
+			continue;
+		}
+		if (starts_with_directory(*(node->argv[i])) == success)
+			node->file_path[i] = ft_strdup(*(node->argv[i]));
+		else if(finds_argv_in_env_path(node->argv, node->path, node->file_path, i) == failed)
+			node->file_path[i] = ft_strdup("");
 		i++;
 	}
-	//권한 확인 와일문 만들기
 }
