@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 23:07:43 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/16 23:08:42 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/17 21:10:42 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void cmd_print (t_input * node)
 	int i;
 	int j;
 	
-	print = node->argv;
+	print = node->input_str;
 	i = 0;
 	j = 0;
 	while (print[i])
@@ -40,7 +40,7 @@ void path_print (t_input * node)
 	int i;
 
 	i = 0;
-	print = node->path;
+	print = node->env_path;
 	while (print[i])
 	{
 		printf("path : %s", print[i]);
@@ -106,9 +106,9 @@ void pipes_free(int argc, int ** fd)
 
 void clear_node(int argc, t_input * node)
 {
-	double_pointer_node_free(node->path);
+	double_pointer_node_free(node->env_path);
 	double_pointer_node_free(node->file_path);
-	triple_pointer_node_free(argc, node->argv);
-	pipes_free(argc, node->fd);
+	triple_pointer_node_free(argc, node->input_str);
+	pipes_free(argc, node->pipes);
 	free(node);
 }

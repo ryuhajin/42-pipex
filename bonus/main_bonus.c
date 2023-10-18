@@ -3,15 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 21:49:40 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/16 23:47:26 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/17 20:00:56 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 #include "../libft/libft.h"
+
+int	ft_strcmp_end_n(const char *s1, const char *s2)
+{
+	size_t			i;
+	unsigned char	*s1_uc;
+	unsigned char	*s2_uc;
+
+	s1_uc = (unsigned char *)s1;
+	s2_uc = (unsigned char *)s2;
+	i = 0;
+	
+	while (s1_uc[i] == s2_uc[i] && s1_uc[i] && s2_uc[i])
+	{
+		i++;
+	}
+	if (s1_uc[i] == '\0' && s2_uc[i] == '\n')
+		return 0;
+	return (s1_uc[i] - s2_uc[i]);
+}
 
 void make_tmp_file (char * argv[])
 {
@@ -20,12 +39,13 @@ void make_tmp_file (char * argv[])
 
 	tmp = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	line = get_next_line(STDIN_FILENO);
-	while (line != NULL && ft_strncmp(argv[2], line, ft_strlen(argv[2])))
+	while (line != NULL && ft_strcmp_end_n(argv[2], line))
 	{
 		write(tmp, line, ft_strlen(line));
 		free(line);
 		line = get_next_line(STDIN_FILENO);
 	}
+	free(line);
 	close(tmp);
 }
 

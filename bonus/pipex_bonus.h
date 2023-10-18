@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/16 23:09:22 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/17 21:10:41 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ typedef enum e_new_line_status
 
 typedef struct input
 {
-	char *** argv;
-    char ** path;
+	char *** input_str;
+    char ** env_path;
 	char ** file_path; //file_path[argc]
-    int ** fd;
+    int ** pipes;
 } t_input;
 
 int	argv_split(int argc, char **argv, char **splits[], int flag);

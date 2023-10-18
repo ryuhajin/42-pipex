@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/16 22:37:32 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/17 20:27:27 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,19 @@ int	argv_split(int argc, char **argv, char **splits[])
 	return (success);
 }
 
+int malloc_for_node (t_input ** node, int argc, char ** argv, char ** envp)
+{
+	int bonus_flag;
+	int 
+	*node = (t_input *)malloc(sizeof(t_input) * 1);
+	if (*node == NULL)
+		return failed;
+	(*node)->file_path = (char **)malloc(sizeof(char *) * argc);
+	if ((*node)->file_path == NULL)
+		return failed;
+	(*node)->file_path[argc - 1] = NULL;
+}
+
 int make_input_node (t_input ** node, int argc, char ** argv, char ** envp)
 {
 	*node = (t_input *)malloc(sizeof(t_input) * 1);
@@ -58,14 +71,14 @@ int make_input_node (t_input ** node, int argc, char ** argv, char ** envp)
 	if ((*node)->file_path == NULL)
 		return failed;
 	(*node)->file_path[argc - 1] = NULL;
-	(*node)->path = ft_split(search_path_from_env(envp), ':');
-	if ((*node)->path == NULL)
+	(*node)->env_path = ft_split(search_path_from_env(envp), ':');
+	if ((*node)->env_path == NULL)
 		return failed;
-	(*node)->argv = malloc(sizeof(char *) * argc);
-	if ((*node)->argv == NULL)
+	(*node)->input_str = malloc(sizeof(char *) * argc);
+	if ((*node)->input_str == NULL)
 		return failed;
-	(*node)->argv[argc -1] = NULL;
-	if (argv_split(argc, argv, (*node)->argv) == failed) // 이름 바꾸기
+	(*node)->input_str[argc -1] = NULL;
+	if (argv_split(argc, argv, (*node)->input_str) == failed) // 이름 바꾸기
 		return failed;
 	make_file_path(*node, argc);
 	return success;
@@ -91,16 +104,16 @@ void temp_free (char *temp, char *temp_file_path)
 	free(temp_file_path);
 }
 
-int finds_argv_in_env_path (char ***argv, char **path, char ** file_path, int i)
+int finds_argv_in_env_path (char ***argv, char **env_path, char ** file_path, int i)
 {
 	char * temp;
 	char * temp_file_path;
 	int j;
 
 	j = 0;
-	while (path[j])
+	while (env_path[j])
 	{
-		temp = ft_strjoin(path[j], "/"); //join 할 때마다 malloc 체크 해줘야하는가???
+		temp = ft_strjoin(env_path[j], "/"); //join 할 때마다 malloc 체크 해줘야하는가???
 		temp_file_path = ft_strjoin(temp, *(argv[i]));
 		if (access(temp_file_path, F_OK) == success)
 		{
@@ -113,7 +126,7 @@ int finds_argv_in_env_path (char ***argv, char **path, char ** file_path, int i)
 			temp_free(temp, temp_file_path);
 		j++;
 	}
-	if (path[j] == NULL)
+	if (env_path[j] == NULL)
 		return failed;
 	return success;
 }
@@ -123,11 +136,11 @@ int check_argv_directory (t_input * node, int i)
 	const char * path = "./";
 	const char * path2 = "../";
 
-	if (*(node->argv[i][0]) == '/')
+	if (*(node->input_str[i][0]) == '/')
 		return success;
-	if (ft_strnstr(*(node->argv[i]), path, 2))
+	if (ft_strnstr(*(node->input_str[i]), path, 2))
 		return success;
-	if (ft_strnstr(*(node->argv[i]), path2, 3))
+	if (ft_strnstr(*(node->input_str[i]), path2, 3))
 		return success;
 	return failed;
 }
@@ -151,17 +164,17 @@ void make_file_path(t_input * node, int argc)
 	int i;
 	i = 0;
 
-	while (node->argv[i])
+	while (node->input_str[i])
 	{
 		if (i == 0 || i == argc-1)
 		{
-			node->file_path[i] = ft_strdup(*(node->argv[i]));
+			node->file_path[i] = ft_strdup(*(node->input_str[i]));
 			i++;
 			continue;
 		}
-		if (starts_with_directory(*(node->argv[i])) == success)
-			node->file_path[i] = ft_strdup(*(node->argv[i]));
-		else if(finds_argv_in_env_path(node->argv, node->path, node->file_path, i) == failed)
+		if (starts_with_directory(*(node->input_str[i])) == success)
+			node->file_path[i] = ft_strdup(*(node->input_str[i]));
+		else if(finds_argv_in_env_path(node->input_str, node->env_path, node->file_path, i) == failed)
 			node->file_path[i] = ft_strdup("");
 		i++;
 	}

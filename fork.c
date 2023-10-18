@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 18:36:53 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/16 21:05:58 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/17 21:30:26 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int make_child(int argc, t_input * node, char ** envp)
+int make_child(int cmd_cnt, int here_doc_flag, t_input * node, char ** envp)
 {
 	pid_t pid;
 	int proc_idx;
@@ -25,15 +25,15 @@ int make_child(int argc, t_input * node, char ** envp)
 		pid = fork();
 		if (pid == 0)
 		{
-			if (node->file_path[proc_idx + 1][0] == '\0')
+			if (node->file_path[proc_idx + 1 + here_doc][0] == '\0')
 			{
-				printf("command not found : %s\n", *(node->argv[proc_idx + 1]));
+				printf("command not found : %s\n", *(node->input_str[proc_idx + 1]));
 				exit(1);
 			}
 			close_fd(argc -4, proc_idx, node);
 			if (pipes_setting(argc -4, proc_idx, node) == failed)
 				exit(1);
-			execve(node->file_path[proc_idx+1], node->argv[proc_idx+1], envp);
+			execve(node->file_path[proc_idx+1], node->input_str[proc_idx+1], envp);
 			exit(1);
 		}
 		proc_idx++;
