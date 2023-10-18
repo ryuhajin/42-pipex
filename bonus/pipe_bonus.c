@@ -3,32 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/17 21:10:41 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/18 15:35:43 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-int make_pipes (int argc, t_input * node)
+int make_pipes (int cmd_cnt, t_input * node)
 {
     int i;
-    int j;
-    int ** pipes_arry;
+	
+    i = 0;
+    node->pipes = (int **)malloc((cmd_cnt -1) * sizeof(int *));
 
-    i = argc -4;
-    j = 0;
-    pipes_arry = (int **)malloc(i * sizeof(int *));
-    node->pipes = pipes_arry;
-
-    while (j < i)
+    while (i < cmd_cnt -1)
     {
-        node->pipes[j] = (int *)malloc(2 * sizeof(int));
-        if (pipe(node->pipes[j]) == failed)
+        node->pipes[i] = (int *)malloc(2 * sizeof(int));
+        if (pipe(node->pipes[i]) == failed)
             return failed;
-        j++;
+        i++;
     }
     return success;
 }
