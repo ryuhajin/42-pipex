@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 17:05:55 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 17:59:10 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/18 21:42:11 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,29 +41,21 @@ int malloc_for_node (t_input ** node, int argc, int cmd_cnt, int here_doc_flag)
 {
 	(*node) = (t_input *)malloc(sizeof(t_input) * 1);
 	if ((*node) == NULL)
-	{
-		printf("node\n");
 		return failed;
-	}
 	(*node)->file_path = (char **)malloc(sizeof(char *) * argc);
 	if ((*node)->file_path == NULL)
-	{
-				printf("file\n");
 		return failed;
-	}
 	(*node)->file_path[argc -1 -here_doc_flag] = NULL;
 	(*node)->input_str = malloc(sizeof(char *) * argc);
 	if ((*node)->input_str == NULL)
-	{
-				printf("input\n");
 		return failed;
-	}
 	(*node)->input_str[argc -1 -here_doc_flag] = NULL;
 	if (make_pipes(cmd_cnt, (*node)) == failed)
-	{
-		printf("pipe\n");
 		return failed;
-	}
+	(*node)->here_doc_flag = (int *)malloc(sizeof(int) * 1);
+	if ((*node)->here_doc_flag == failed)
+		return failed;
+	(*node)->here_doc_flag = here_doc_flag;
 	return success;
 }
 

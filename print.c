@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:16:29 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 17:21:06 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/18 21:15:05 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,6 @@ void clear_node(int argc, t_input * node)
 	double_pointer_node_free(node->file_path);
 	triple_pointer_node_free(argc, node->input_str);
 	pipes_free(argc, node->pipes);
+	free(node->here_doc_flag);
 	free(node);
 }

@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 17:38:48 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/18 21:42:53 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct input
     char ** env_path;
 	char ** file_path; //file_path[argc]
     int ** pipes;
+	int * here_doc_flag;
 } t_input;
 
 // init.c
@@ -61,7 +62,7 @@ void last_cmd(int proc_idx, t_input * node);
 int pipes_setting (int total_pipes, int proc_idx, t_input * node);
 
 //fork.c
-int make_child(t_input * node, int cmd_cnt, char ** envp);
+int make_child(t_input * node, char ** envp, int cmd_cnt);
 
 //print.c
 void cmd_print (t_input * node);
