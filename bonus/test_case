@@ -1,0 +1,186 @@
+***** ./pipex (no argc) -> 정상 종료
+***** 릭 체크 확인하기!!!
+
+<mendetory>
+
+1. infile이 없는 경우
+bash : <nofile cat cat >outfile
+-출력 결과
+nofile: No such file or directory
+
+-파일 생성 유무
+infile: x
+outfile: o
+
+./pipex
+-출력 결과
+nofile: No such file or directory
+
+-파일 생성 유무
+infile: x
+outfile: o
+
+2. infile이 있지만 권한이 없는 경우
+bash : <infile cat cat > outfile
+-출력 결과
+infile: Permission denied
+
+-파일 생성 유무
+infile: x
+outfile: o
+
+./pipex
+-출력 결과
+infile: Permission denied
+
+-파일 생성 유무
+infile: x
+outfile: o
+
+3. cmd가 없는 경우
+bash : <infile nocmd cat > outfile
+-출력 결과
+nocmd: command not found
+
+-파일 생성 유무
+infile:
+outfile:
+
+./pipex
+-출력 결과
+command not found: nocmd
+
+-파일 생성 유무
+infile:
+outfile:
+
+4. cmd의 권한이 없는 경우
+bash : <infile ./cmd cat > outfile
+-출력 결과
+./cat: Permission denied
+
+-파일 생성 유무
+infile:
+outfile: o
+
+./pipex
+-출력 결과
+./cat: Permission denied
+
+-파일 생성 유무
+infile:
+outfile: o
+
+5. outfile이 없는 경우
+bash : <infile cat cat >nofile
+-출력 결과
+
+-파일 생성 유무
+infile:
+outfile:
+
+./pipex
+-출력 결과
+
+-파일 생성 유무
+infile:
+outfile:
+
+6. outfile이 있지만 권한이 없는 경우
+bash : <infile cat cat >outfile
+-출력 결과
+outfile: Permission denied
+
+-파일 생성 유무
+infile:
+outfile:
+
+./pipex
+-출력 결과
+outfile: Permission denied
+
+-파일 생성 유무
+infile:
+outfile:
+
+7. infile outfile 둘 다 있지만 cmd가 없는 경우
+bash: <infile nocmd1 | nocmd2 >outfile
+-출력 결과
+
+-파일 생성 유무
+infile:
+outfile:
+
+./pipex
+
+8. infile outfile 둘 다 없고 cmd가 있는 경우
+bash: <nofile cat | cat >nofile2
+-출력 결과
+nofile: No such file or directory
+
+-파일 생성 유무
+infile:
+outfile:
+
+./pipex
+nofile: No such file or directory
+
+9. infile outfile 둘 다 있고 cmd의 권한이 없는 경우
+bash: <infile ./cmd | ./cmd2 >outfile
+-출력 결과
+
+-파일 생성 유무
+
+10. infile outfile 둘 다 권한이 있고 cmd가 있는 경우
+bash: <nofile cat | cat>nofile2
+-출력 결과
+
+-파일 생성 유무
+
+11. infile outfile 둘 다 권한이 없고 cmd의 권한이 없는 경우
+bash: <nofile ./cmd | ./cmd2 >nofile2
+-출력 결과
+
+-파일 생성 유무
+
+12. infile outfile 둘 다 있고, cmd가 있고 모든 인자들이 권한이 있는 경우
+bash: <infile cat | cat >outfile
+-출력 결과
+
+-파일 생성 유무
+
+----------보너스
+
+0. 멀티 파이프일때 outfile 있을때 지워지고 잘 써지나 확인 / 없을때 잘 생성되나 확인
+
+1. 파이프가 짝수 일때 확인
+bash: <infile cat | cat | cat >outfile
+
+2. 파이프가 홀수 일때 확인
+bash: <infile cat | cat | cat | cat >outfile
+
+
+3. here_doc 확인
+bash: <<test cat | cat >> outfile
+
+4. outfile이 권한이 없을 때 확인
+bash: <<test cat | cat >> outfile
+
+5. outfile이 없을 때 확인
+bash: <<test cat | cat >> outfile
+
+6. 커맨드가 없을 때 확인
+bash: <<test nocmd | nocmd2 >> outfile
+
+7. 커맨드가 권한이 없을 때 확인
+bash: <<test ./cmd | ./cmd2 >> outfile
+
+8. limeter 가 권한이 없을 때 확인
+bash:<<nolim cat | cat >> outfile
+
+9. here_doc을 입력했을때 outfile 이 있으면 뒤에 잘 써지나 확인
+
+10. here_doc을 입력했을때 outfile 이 없으면 생성되나 확인
+
+
+

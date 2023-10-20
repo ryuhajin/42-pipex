@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 21:49:40 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/19 16:03:38 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/20 23:34:19 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
+#include <sys/errno.h>
 #include "../libft/libft.h"
+
+void	check_leak(void)
+{
+	system("leaks --list pipex");
+}
 
 int	ft_strcmp_end_n(const char *s1, const char *s2)
 {
@@ -68,19 +74,24 @@ void wait_for_child (int cmd_cnt)
 	}
 }
 
-// void check_fd()
-// {
-// 	int fd = open("main.c", O_RDONLY);
-// 	printf("check fd : %d\n", fd);
-// 	close(fd);
-// }
+void check_fd()
+{
+	int fd = open("main.c", O_RDONLY);
+	printf("check fd : %d\n", fd);
+	close(fd);
+}
 
 int main(int argc, char * argv[], char ** envp)
 {
 	t_input * node;
 	int cmd_cnt;
 	int here_doc_flag;
-
+	// "     " << 인자로 들어왔을때 처리
+	// here_doc을 tmp 파일로 사용하기 (limeter xxxxxxxxxx)
+	// here_doc_1, here_doc_2
+	// access(here_doc_1, F_OK) -> 없으면 이 이름 사용
+	// 이미 있으면 i + 1 -> here_doc_2
+	// atexit(check_leak);
 	if (argc < 5)
 		return (0);
 	// check_fd();
@@ -94,12 +105,12 @@ int main(int argc, char * argv[], char ** envp)
 		exit(1);
 	if (here_doc_flag == 1)
 		make_tmp_file(argv);
-	// cmd_print(node);
-	// path_print(node);
-	// file_path_print(node);
+	cmd_print(node);
+	path_print(node);
+	file_path_print(node);
 	make_child(node, envp, cmd_cnt);
 	wait_for_child(cmd_cnt);
-	clear_node(argc, node);
+	clear_node(argc, cmd_cnt, node);
 	// check_fd();
 	return (0);
 }

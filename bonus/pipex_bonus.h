@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/19 14:46:01 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/20 19:39:15 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ typedef struct input
     char ** env_path;
 	char ** file_path; //file_path[argc]
     int ** pipes;
-	int * here_doc_flag;
+	int here_doc_flag;
+	int infile_fd;
+	int outfile_fd;
 } t_input;
 
 
@@ -84,6 +86,7 @@ void first_cmd (int proc_idx, t_input * node);
 void middle_cmd(int proc_idx, t_input * node);
 void last_cmd(int proc_idx, t_input * node);
 void pipes_fd_setting (int total_pipes, int proc_idx, t_input * node);
+int open_outfile (int proc_idx, t_input * node);
 
 //fork_bonus.c
 int make_child(t_input * node, char ** envp, int cmd_cnt);
@@ -95,7 +98,7 @@ void file_path_print(t_input * node);
 void	double_pointer_node_free(char **split);
 void	triple_pointer_node_free(int argc, int here_doc_flag, char **split[]);
 void pipes_free(int argc, int ** pipes);
-void clear_node(int argc, t_input * node);
+void clear_node(int argc, int cmd_cnt, t_input * node);
 
 //read_line_bonus.c
 ssize_t	remainder_find_n(int fd, char **line, char remainder[][BUFFER_SIZE + 1]);

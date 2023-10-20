@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:16:29 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/19 14:56:43 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/20 22:59:49 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ void path_print (t_input * node)
 	print = node->env_path;
 	while (print[i])
 	{
-		printf("path : %s", print[i]);
-		printf("\n");
+		printf("env_path : %s\n", print[i]);
 		i++;
 	}
 }
@@ -58,7 +57,7 @@ void file_path_print(t_input * node)
 	print = node->file_path;
 	while (print[i])
 	{
-		printf("\n");
+		printf("file_path %d: %s\n", i, print[i]);
 		i++;
 	}
 }
@@ -90,12 +89,12 @@ void	triple_pointer_node_free(int argc, int here_doc_flag, char **split[])
 	free(split);
 }
 
-void pipes_free(int argc, int ** pipes)
+void pipes_free(int cmd_cnt, int ** pipes)
 {
 	int	i;
 
 	i = 0;
-	while (i < argc -4)
+	while (i < cmd_cnt -1)
 	{
 		free(pipes[i]);
 		i++;
@@ -103,14 +102,14 @@ void pipes_free(int argc, int ** pipes)
 	free(pipes);
 }
 
-void clear_node(int argc, t_input * node)
+void clear_node(int argc, int cmd_cnt, t_input * node)
 {
-	if (*node->here_doc_flag)
+	if (node->here_doc_flag)
 		unlink(node->file_path[0]);
 	double_pointer_node_free(node->env_path);
 	double_pointer_node_free(node->file_path);
-	triple_pointer_node_free(argc, *node->here_doc_flag, node->input_str);
-	pipes_free(argc, node->pipes);
-	free(node->here_doc_flag);
+	triple_pointer_node_free(argc, node->here_doc_flag, node->input_str);
+	if(cmd_cnt != 1)
+		pipes_free(cmd_cnt, node->pipes);
 	free(node);
 }

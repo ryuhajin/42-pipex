@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/19 13:28:59 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/20 23:30:06 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,14 +79,14 @@ int open_outfile (int proc_idx, t_input * node)
 	int tmp;
 
     tmp = failed;
-	if (*(node->here_doc_flag) == 0)
+	if (node->here_doc_flag == 0)
 	{
 		if (access(node->file_path[proc_idx +2], F_OK) == success)
 			tmp = open(node->file_path[proc_idx +2], O_WRONLY | O_TRUNC);
 		else
 			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
-	else if (*(node->here_doc_flag) == 1)
+	else if (node->here_doc_flag == 1)
 	{
 		if (access(node->file_path[proc_idx +2], F_OK) == success)
 			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_APPEND);

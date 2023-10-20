@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/19 14:31:12 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/20 23:30:10 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	argv_split(int argc, char **argv, t_input * node)
 	int		i;
 	int		j;
 
-	i = 1 + (*node->here_doc_flag);
+	i = 1 + (node->here_doc_flag);
 	j = 0;
 	while (i < argc)
 	{
