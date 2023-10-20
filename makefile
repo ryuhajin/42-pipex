@@ -7,7 +7,7 @@ NAME = pipex
 
 SRCS = main.c input.c fork.c pipe.c init.c print.c
 
-SRCS_BONUS = ./bonus/main_bonus.c ./bonus/input_bonus.c ./bonus/fork_bonus.c \
+SRCS_BONUS = ./bonus/main_bonus.c ./bonus/init_bonus.c ./bonus/input_bonus.c ./bonus/fork_bonus.c \
 			./bonus/pipe_bonus.c ./bonus/read_line_bonus.c ./bonus/read_line_bonus2.c \
 			./bonus/print_bonus.c
 

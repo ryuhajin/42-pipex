@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:16:29 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 21:15:05 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 14:55:58 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void file_path_print(t_input * node)
 	print = node->file_path;
 	while (print[i])
 	{
-		printf("file_path : %s", print[i]);
 		printf("\n");
 		i++;
 	}

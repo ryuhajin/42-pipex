@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 18:36:53 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 22:54:58 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 15:41:58 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void child_pipe_setting (t_input * node, int cmd_cnt, int proc_idx)
 	pipes_fd_setting(cmd_cnt -1, proc_idx, node);
 }
 
-int first_infile_check (t_input * node, int proc_idx)
+int first_infile_check (t_input * node)
 {
 	if (access(node->file_path[0], F_OK) == failed)
 	{	
@@ -40,7 +40,7 @@ int middle_cmdfile_check(t_input * node, int proc_idx)
 		printf(" %s: No such file or directory\n", node->file_path[proc_idx+1]);
 		return failed;
 	}
-	else if (access(node->file_path[0], X_OK) == failed)
+	else if (access(node->file_path[proc_idx +1], X_OK) == failed)
 	{
 		printf(" %s: Permission denied\n", node->file_path[proc_idx+1]);
 		return failed;
@@ -68,7 +68,7 @@ int file_access_check(t_input * node, int proc_idx, int cmd_cnt)
 
 	total_pipes = cmd_cnt-1;
     if (proc_idx == 0)
-		result = first_infile_check(node, proc_idx);
+		result = first_infile_check(node);
     else if (proc_idx == total_pipes)
 		result = last_outfile_check(node, proc_idx);
     else
@@ -93,7 +93,7 @@ int make_child(t_input * node, char ** envp, int cmd_cnt)
 		{
 			if (node->file_path[proc_idx + 1][0] == '\0')
 			{
-				printf("command not found : %s\n", node->file_path[proc_idx +1]);
+				printf("command not found : %s\n", node->input_str[proc_idx +1][0]);
 				exit(1);
 			}
 			if (file_access_check(node, proc_idx, cmd_cnt) == failed)

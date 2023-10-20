@@ -6,7 +6,7 @@
 /*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/17 21:10:41 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 14:46:01 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,43 +46,65 @@ typedef enum e_new_line_status
 	line_malloc_failed = 2
 }		t_make_line_status;
 
+typedef enum e_pipes
+{
+	read_fd = 0,
+	write_fd = 1
+}	t_pipe;
+
 typedef struct input
 {
 	char *** input_str;
     char ** env_path;
 	char ** file_path; //file_path[argc]
     int ** pipes;
+	int * here_doc_flag;
 } t_input;
 
-int	argv_split(int argc, char **argv, char **splits[], int flag);
+
+// init_bonus.c
+int malloc_for_node (t_input ** node, int argc, int cmd_cnt, int here_doc_flag);
+int init_input_node (t_input * node, int argc, char ** argv, char ** envp);
+int make_pipes (int cmd_cnt, t_input * node);
+
+//input_bonus.c
 int argv_null_check (char * argv[], int argc);
-int make_input_node (t_input ** node, int argc, char ** argv, char ** envp);
-int make_input_node_bonus(t_input ** node, int argc, char ** argv, char ** envp);
-char * search_path_from_env (char ** envp);
-void temp_free (char *temp, char *temp_file_path);
-int finds_argv_in_env_path(char ***input_cmd, char **path, char ** file_path, int i);
+int	argv_split(int argc, char **argv, t_input * node);
+char * search_path_from_env(char ** envp);
+char * make_tmp_env_path (char ***input_str, char ** env_path, int i, int j);
+int finds_cmd_in_env_path (char ***input_str, char **env_path, char ** file_path, int i);
+int check_argv_directory (t_input * node, int i);
 int starts_with_directory(char *str);
-void make_file_path(t_input * node, int argc);
-int make_child(int argc, t_input * node, char ** envp);
-int make_pipes (int argc, t_input * node);
+int make_file_path(t_input * node, int argc, int i);
+
+//pipe_bonus.c
 void close_fd_all (int total_pipes, t_input * node);
 void close_fd (int total_pipes, int proc_idx, t_input * node);
-int pipes_setting (int total_pipes, int proc_idx, t_input * node);
+void first_cmd (int proc_idx, t_input * node);
+void middle_cmd(int proc_idx, t_input * node);
+void last_cmd(int proc_idx, t_input * node);
+void pipes_fd_setting (int total_pipes, int proc_idx, t_input * node);
+
+//fork_bonus.c
+int make_child(t_input * node, char ** envp, int cmd_cnt);
+
+//print_bonus.c
+void cmd_print (t_input * node);
+void path_print (t_input * node);
+void file_path_print(t_input * node);
+void	double_pointer_node_free(char **split);
+void	triple_pointer_node_free(int argc, int here_doc_flag, char **split[]);
+void pipes_free(int argc, int ** pipes);
+void clear_node(int argc, t_input * node);
+
+//read_line_bonus.c
+ssize_t	remainder_find_n(int fd, char **line, char remainder[][BUFFER_SIZE + 1]);
+ssize_t	read_file(int fd, char **line, char remainder[][BUFFER_SIZE + 1]);
+char	*read_flag_check(ssize_t flag, char *line);
 char	*get_next_line(int fd);
 char	*ft_strdup_gnl(char *s1);
 char	*ft_strjoin_gnl(char *s1, char *s2, ssize_t size);
 size_t	ft_strlcpy_gnl(char *dest, char *src);
 ssize_t	find_newline(char *buff, ssize_t *size);
-ssize_t	remainder_find_n(int fd, char **line,
-			char remainder[][BUFFER_SIZE + 1]);
-ssize_t	read_file(int fd, char **line, char remainder[][BUFFER_SIZE + 1]);
-char	*read_flag_check(ssize_t flag, char *line);
-void cmd_print (t_input * node);
-void path_print (t_input * node);
-void file_path_print(t_input * node);
-void	double_pointer_node_free(char **split);
-void	triple_pointer_node_free(int argc, char **split[]);
-void pipes_free(int argc, int ** fd);
-void clear_node(int argc, t_input * node);
 
 #endif

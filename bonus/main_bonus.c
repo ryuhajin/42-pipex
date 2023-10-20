@@ -6,7 +6,7 @@
 /*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 21:49:40 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/17 20:00:56 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 16:03:38 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,27 +49,57 @@ void make_tmp_file (char * argv[])
 	close(tmp);
 }
 
+int here_doc_check (char * argv)
+{
+	if (!ft_strncmp("here_doc", argv, ft_strlen(argv)))
+		return 1;
+	return 0;
+}
+
+void wait_for_child (int cmd_cnt)
+{
+	int i;
+
+	i = 0;
+	while (i < cmd_cnt)
+	{
+		wait(0);
+		i++;
+	}
+}
+
+// void check_fd()
+// {
+// 	int fd = open("main.c", O_RDONLY);
+// 	printf("check fd : %d\n", fd);
+// 	close(fd);
+// }
+
 int main(int argc, char * argv[], char ** envp)
 {
 	t_input * node;
+	int cmd_cnt;
+	int here_doc_flag;
 
 	if (argc < 5)
 		return (0);
+	// check_fd();
+	here_doc_flag = here_doc_check(argv[1]);
+	cmd_cnt = argc -3 -here_doc_flag;
     if (argv_null_check(argv, argc) == failed)
 		exit(1);
-	if (!ft_strncmp("here_doc", argv[1], ft_strlen(argv[1])))
-	{
+	if (malloc_for_node(&node, argc, cmd_cnt, here_doc_flag) == failed)
+		exit(1);
+	if (init_input_node(node, argc, argv, envp) == failed)
+		exit(1);
+	if (here_doc_flag == 1)
 		make_tmp_file(argv);
-		if (make_input_node_bonus(&node, argc, argv, envp)== failed)
-			exit(1);
-		make_child(argc, node, envp);
-		// unlink(*(node->argv[0]));
-	}
-	else
-	{
-		if (make_input_node(&node, argc, argv, envp)== failed)
-			exit(1);
-		make_child(argc, node, envp);
-	}
+	// cmd_print(node);
+	// path_print(node);
+	// file_path_print(node);
+	make_child(node, envp, cmd_cnt);
+	wait_for_child(cmd_cnt);
 	clear_node(argc, node);
+	// check_fd();
+	return (0);
 }

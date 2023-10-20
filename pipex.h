@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 21:42:53 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 13:29:35 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ int make_file_path(t_input * node, int argc, int i);
 //pipe.c
 void close_fd_all (int total_pipes, t_input * node);
 void close_fd (int total_pipes, int proc_idx, t_input * node);
-void first_cmd (int total_pipes, int proc_idx, t_input * node);
+void first_cmd (int proc_idx, t_input * node);
 void middle_cmd(int proc_idx, t_input * node);
 void last_cmd(int proc_idx, t_input * node);
-int pipes_setting (int total_pipes, int proc_idx, t_input * node);
+void pipes_fd_setting (int total_pipes, int proc_idx, t_input * node);
 
 //fork.c
 int make_child(t_input * node, char ** envp, int cmd_cnt);

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:07 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 22:58:19 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 16:13:03 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./pipex.h"
+#include "./libft/libft.h"
 
 void foo()
 {
@@ -24,17 +25,16 @@ int here_doc_check (char * argv[])
 	return 0;
 }
 
-int wait_for_child (int cmd_cnt)
+void wait_for_child (int cmd_cnt)
 {
 	int i;
-	int status;
 
+	i = 0;
 	while (i < cmd_cnt)
 	{
-		wait(&status);
+		wait(0);
 		i++;
 	}
-	return success;
 }
 
 int main (int argc, char * argv[], char ** envp)
@@ -43,16 +43,13 @@ int main (int argc, char * argv[], char ** envp)
 	t_input * node;
 	int cmd_cnt;
 	int here_doc_flag;
-	int status;
 
+	// if (argc != 5)
+	// 	exit(1);
 	if (argv_null_check(argv, argc) == failed)
 		exit(1);
 	here_doc_flag = here_doc_check(argv);
 	cmd_cnt = argc -3 -here_doc_flag;
-	printf("cmd_cnt: %d\n", cmd_cnt);
-	// if (argc != 5)
-	// 	exit(1);
-
 	if (malloc_for_node(&node, argc, cmd_cnt, here_doc_flag) == failed)
 		exit(1);
 	if (init_input_node(node, argc, argv, envp) == failed)
@@ -60,7 +57,7 @@ int main (int argc, char * argv[], char ** envp)
 	cmd_print(node);
 	path_print (node);
 	file_path_print(node);
-	make_child(node, cmd_cnt, envp);
+	make_child(node, envp, cmd_cnt);
 	wait_for_child(cmd_cnt);
 	clear_node(argc, node);
 	return (0);

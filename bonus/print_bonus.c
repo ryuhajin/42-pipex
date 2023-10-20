@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/16 23:07:43 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/17 21:10:42 by dayou            ###   ########.fr       */
+/*   Created: 2023/10/18 16:16:29 by dayou             #+#    #+#             */
+/*   Updated: 2023/10/19 14:56:43 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void file_path_print(t_input * node)
 	print = node->file_path;
 	while (print[i])
 	{
-		printf("file_path : %s", print[i]);
 		printf("\n");
 		i++;
 	}
@@ -78,12 +77,12 @@ void	double_pointer_node_free(char **split)
 	free(split);
 }
 
-void	triple_pointer_node_free(int argc, char **split[])
+void	triple_pointer_node_free(int argc, int here_doc_flag, char **split[])
 {
 	int	i;
 
 	i = 0;
-	while (i < argc - 1)
+	while (i < argc - 1 -here_doc_flag)
 	{
 		double_pointer_node_free(split[i]);
 		i++;
@@ -91,24 +90,27 @@ void	triple_pointer_node_free(int argc, char **split[])
 	free(split);
 }
 
-void pipes_free(int argc, int ** fd)
+void pipes_free(int argc, int ** pipes)
 {
 	int	i;
 
 	i = 0;
 	while (i < argc -4)
 	{
-		free(fd[i]);
+		free(pipes[i]);
 		i++;
 	}
-	free(fd);
+	free(pipes);
 }
 
 void clear_node(int argc, t_input * node)
 {
+	if (*node->here_doc_flag)
+		unlink(node->file_path[0]);
 	double_pointer_node_free(node->env_path);
 	double_pointer_node_free(node->file_path);
-	triple_pointer_node_free(argc, node->input_str);
+	triple_pointer_node_free(argc, *node->here_doc_flag, node->input_str);
 	pipes_free(argc, node->pipes);
+	free(node->here_doc_flag);
 	free(node);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 22:53:19 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 13:28:59 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void close_fd (int total_pipes, int proc_idx, t_input * node)
     }
 }
 
-void first_cmd (int total_pipes, int proc_idx, t_input * node)
+void first_cmd (int proc_idx, t_input * node)
 {
     int tmp;
 	int right_pipe;
@@ -78,19 +78,20 @@ int open_outfile (int proc_idx, t_input * node)
 {
 	int tmp;
 
-	if (node->here_doc_flag == 0)
+    tmp = failed;
+	if (*(node->here_doc_flag) == 0)
 	{
 		if (access(node->file_path[proc_idx +2], F_OK) == success)
 			tmp = open(node->file_path[proc_idx +2], O_WRONLY | O_TRUNC);
 		else
 			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
-	else if (node->here_doc_flag == 1)
+	else if (*(node->here_doc_flag) == 1)
 	{
 		if (access(node->file_path[proc_idx +2], F_OK) == success)
-			tmp = open(*node->file_path[proc_idx + 2], O_WRONLY | O_APPEND);
+			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_APPEND);
 		else
-			tmp = open(*node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_APPEND, 0644);
+			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
 	return tmp;
 }
@@ -113,7 +114,7 @@ void last_cmd(int proc_idx, t_input * node)
 void pipes_fd_setting (int total_pipes, int proc_idx, t_input * node)
 {
     if (proc_idx == 0)
-        first_cmd(total_pipes, proc_idx, node);
+        first_cmd(proc_idx, node);
     else if (proc_idx == total_pipes)
         last_cmd(proc_idx, node);
     else

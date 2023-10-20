@@ -3,31 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/18 15:35:43 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/19 14:07:05 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
-int make_pipes (int cmd_cnt, t_input * node)
-{
-    int i;
-	
-    i = 0;
-    node->pipes = (int **)malloc((cmd_cnt -1) * sizeof(int *));
-
-    while (i < cmd_cnt -1)
-    {
-        node->pipes[i] = (int *)malloc(2 * sizeof(int));
-        if (pipe(node->pipes[i]) == failed)
-            return failed;
-        i++;
-    }
-    return success;
-}
+#include "../libft/libft.h"
 
 void close_fd_all (int total_pipes, t_input * node)
 {
@@ -35,8 +19,8 @@ void close_fd_all (int total_pipes, t_input * node)
     i = 0;
     while (i < total_pipes)
     {
-        close(node->pipes[i][0]);
-        close(node->pipes[i][1]);
+        close(node->pipes[i][read_fd]);
+        close(node->pipes[i][write_fd]);
         i++;
     }
 }
@@ -53,70 +37,86 @@ void close_fd (int total_pipes, int proc_idx, t_input * node)
             i++;
             continue;
         }
-        close(node->pipes[i][0]);
-        close(node->pipes[i][1]);
+        close(node->pipes[i][read_fd]);
+        close(node->pipes[i][write_fd]);
         i++;
     }
 }
 
-void first_pipe (int total_pipes, t_input * node)
+void first_cmd (int proc_idx, t_input * node)
 {
     int tmp;
+	int right_pipe;
 
-    tmp = open(*node->input_str[0], O_RDONLY);
-    if (tmp == -1) // 명령어가 하나일때 (proc 1)
-    {
-        if (total_pipes != 0)
-        {
-            close(node->pipes[0][1]);
-            close(node->pipes[0][0]);
-        }
-        printf("no such file or directory: %s\n", *node->input_str[0]);
-		return;
-    }
+	right_pipe = proc_idx;
+	tmp = open(node->file_path[0], O_RDONLY);
+	
     dup2(tmp, STDIN_FILENO);
     close(tmp);
-    dup2(node->pipes[0][1], STDOUT_FILENO);
-    close(node->pipes[0][1]);
-    close(node->pipes[0][0]);
+    dup2(node->pipes[right_pipe][write_fd], STDOUT_FILENO);
+    close(node->pipes[right_pipe][write_fd]);
+    close(node->pipes[right_pipe][read_fd]);
 }
 
-void middle_pipes(int proc_idx, t_input * node)
+void middle_cmd(int proc_idx, t_input * node)
 {
-    dup2(node->pipes[proc_idx -1][0], STDIN_FILENO);
-    close(node->pipes[proc_idx -1][0]);
-    close(node->pipes[proc_idx -1][1]);
-    dup2(node->pipes[proc_idx][1], STDOUT_FILENO);
-    close(node->pipes[proc_idx][1]);
-    close(node->pipes[proc_idx][0]);
+	int left_pipe;
+	int right_pipe;
+
+	left_pipe= proc_idx -1;
+	right_pipe = proc_idx;
+
+    dup2(node->pipes[left_pipe][read_fd], STDIN_FILENO);
+    close(node->pipes[left_pipe][read_fd]);
+    close(node->pipes[left_pipe][write_fd]);
+    dup2(node->pipes[right_pipe][write_fd], STDOUT_FILENO);
+    close(node->pipes[right_pipe][write_fd]);
+    close(node->pipes[right_pipe][read_fd]);
 }
 
-void last_pipe(int proc_idx, t_input * node)
+int open_outfile (int proc_idx, t_input * node)
+{
+	int tmp;
+
+    tmp = failed;
+	if (*(node->here_doc_flag) == 0)
+	{
+		if (access(node->file_path[proc_idx +2], F_OK) == success)
+			tmp = open(node->file_path[proc_idx +2], O_WRONLY | O_TRUNC);
+		else
+			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	}
+	else if (*(node->here_doc_flag) == 1)
+	{
+		if (access(node->file_path[proc_idx +2], F_OK) == success)
+			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_APPEND);
+		else
+			tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_APPEND, 0644);
+	}
+	return tmp;
+}
+
+void last_cmd(int proc_idx, t_input * node)
 {
     int tmp;
-    
-    tmp = open(*node->input_str[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (tmp == -1)
-    {
-        close(node->pipes[proc_idx -1][0]);
-        close(node->pipes[proc_idx -1][1]);
-        printf("no such file or directory: %s\n", *node->input_str[proc_idx + 2]);
-		return;
-    }
-    dup2(node->pipes[proc_idx -1][0], STDIN_FILENO);
-    close(node->pipes[proc_idx -1][0]);
-    close(node->pipes[proc_idx -1][1]);
+    int left_pipe;
+
+	left_pipe= proc_idx -1;
+	tmp = open_outfile(proc_idx, node);
+	
+    dup2(node->pipes[left_pipe][read_fd], STDIN_FILENO);
+    close(node->pipes[left_pipe][read_fd]);
+    close(node->pipes[left_pipe][write_fd]);
     dup2(tmp, STDOUT_FILENO);
     close(tmp);
 }
 
-int pipes_setting (int total_pipes, int proc_idx, t_input * node)
+void pipes_fd_setting (int total_pipes, int proc_idx, t_input * node)
 {
     if (proc_idx == 0)
-        first_pipe(total_pipes, node);
+        first_cmd(proc_idx, node);
     else if (proc_idx == total_pipes)
-        last_pipe(proc_idx, node);
+        last_cmd(proc_idx, node);
     else
-        middle_pipes(proc_idx, node);
-    return success;
+        middle_cmd(proc_idx, node);
 }
