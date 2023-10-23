@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 21:49:40 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/20 23:34:19 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/22 16:52:38 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void make_tmp_file (char * argv[])
 	int tmp;
 	char * line;
 
-	tmp = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	tmp = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	line = get_next_line(STDIN_FILENO);
 	while (line != NULL && ft_strcmp_end_n(argv[2], line))
 	{
@@ -80,6 +80,35 @@ void check_fd()
 	printf("check fd : %d\n", fd);
 	close(fd);
 }
+int argv_space_check (int argc, char *argv[], int here_doc_flag)
+{
+	int i;
+	int j;
+
+	i = 1;
+	if (here_doc_flag == 1)
+		i = 3;
+	while (i < argc)
+	{
+		j = 0;
+		while (argv[i][j] == ' ')
+			j++;
+		if (j == ft_strlen(argv[i]))
+		{
+			ft_perror("error : input error");
+			return failed;
+		}
+	}
+	return success;
+}
+
+int Check_for_argv(int argc, char * argv[], int here_doc_flag)
+{
+	if (argv_null_check(argc, argv, here_doc_flag) == failed)
+		return failed;
+	if (argv_space_check(argc, argv, here_doc_flag) == failed)
+		return failed;
+}
 
 int main(int argc, char * argv[], char ** envp)
 {
@@ -93,11 +122,14 @@ int main(int argc, char * argv[], char ** envp)
 	// 이미 있으면 i + 1 -> here_doc_2
 	// atexit(check_leak);
 	if (argc < 5)
-		return (0);
+	{	
+		ft_perror("error : check the argc.");
+		return failed;
+	}
 	// check_fd();
 	here_doc_flag = here_doc_check(argv[1]);
 	cmd_cnt = argc -3 -here_doc_flag;
-    if (argv_null_check(argv, argc) == failed)
+    if (Check_for_argv(argc, argv, here_doc_flag) == failed)
 		exit(1);
 	if (malloc_for_node(&node, argc, cmd_cnt, here_doc_flag) == failed)
 		exit(1);

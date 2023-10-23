@@ -3,25 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   input_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 14:59:12 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/20 23:30:10 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/22 17:58:10 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 #include "../libft/libft.h"
 
-int argv_null_check (char * argv[], int argc)
+int argv_null_check (int argc, char * argv[], int here_doc_flag)
 {
 	int i;
 	i = 1;
+	if (here_doc_flag == 1)
+		i = 3;
 	while (i < argc)
 	{
 		if (*argv[i] == '\0')
 		{
-			printf("input error");
+			ft_perror("error : input error");
 			return failed;
 		}
 		i++;
@@ -35,10 +37,15 @@ int	argv_split(int argc, char **argv, t_input * node)
 	int		i;
 	int		j;
 
-	i = 1 + (node->here_doc_flag);
+	i = 1;
 	j = 0;
 	while (i < argc)
 	{
+		if (i == 2 && node->here_doc_flag == 1)
+		{
+			i++;
+			continue;
+		}
 		temp = ft_split(argv[i], ' ');
 		if (temp == NULL)
 			return (failed);

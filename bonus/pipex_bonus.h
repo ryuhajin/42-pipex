@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
+/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/20 19:39:15 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/22 16:59:54 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int init_input_node (t_input * node, int argc, char ** argv, char ** envp);
 int make_pipes (int cmd_cnt, t_input * node);
 
 //input_bonus.c
-int argv_null_check (char * argv[], int argc);
+int argv_null_check (int argc, char * argv[], int here_doc_flag);
 int	argv_split(int argc, char **argv, t_input * node);
 char * search_path_from_env(char ** envp);
 char * make_tmp_env_path (char ***input_str, char ** env_path, int i, int j);
