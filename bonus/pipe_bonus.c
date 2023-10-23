@@ -6,103 +6,57 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 19:06:35 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/20 20:13:03 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/23 20:38:55 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-#include "../libft/libft.h"
 
-void close_fd_all (int total_pipes, t_input * node)
+void	fd_dup_for_first_cmd(int proc_idx, t_input *node)
 {
-    int i;
-    i = 0;
-    while (i < total_pipes)
-    {
-        close(node->pipes[i][read_fd]);
-        close(node->pipes[i][write_fd]);
-        i++;
-    }
-}
-
-void close_fd (int total_pipes, int proc_idx, t_input * node)
-{
-    int i;
-
-    i = 0;
-    while (i < total_pipes)
-    {
-        if (i == proc_idx -1 || i == proc_idx)
-        {
-            i++;
-            continue;
-        }
-        close(node->pipes[i][read_fd]);
-        close(node->pipes[i][write_fd]);
-        i++;
-    }
-}
-
-void first_cmd (int proc_idx, t_input * node)
-{
-	int right_pipe;
+	int	right_pipe;
 
 	right_pipe = proc_idx;
-	
-    dup2(node->infile_fd, STDIN_FILENO);
-    close(node->infile_fd);
-    dup2(node->pipes[right_pipe][write_fd], STDOUT_FILENO);
-    close(node->pipes[right_pipe][write_fd]);
-    close(node->pipes[right_pipe][read_fd]);
+	dup2(node->infile_fd, STDIN_FILENO);
+	close(node->infile_fd);
+	dup2(node->pipes[right_pipe][write_fd], STDOUT_FILENO);
+	close(node->pipes[right_pipe][write_fd]);
+	close(node->pipes[right_pipe][read_fd]);
 }
 
-void middle_cmd(int proc_idx, t_input * node)
+void	fd_dup_for_middle_cmd(int proc_idx, t_input *node)
 {
-	int left_pipe;
-	int right_pipe;
+	int	left_pipe;
+	int	right_pipe;
 
-	left_pipe= proc_idx -1;
+	left_pipe = proc_idx - 1;
 	right_pipe = proc_idx;
-	
-    dup2(node->pipes[left_pipe][read_fd], STDIN_FILENO);
-    close(node->pipes[left_pipe][read_fd]);
-    close(node->pipes[left_pipe][write_fd]);
-    dup2(node->pipes[right_pipe][write_fd], STDOUT_FILENO);
-    close(node->pipes[right_pipe][write_fd]);
-    close(node->pipes[right_pipe][read_fd]);
+	dup2(node->pipes[left_pipe][read_fd], STDIN_FILENO);
+	close(node->pipes[left_pipe][read_fd]);
+	close(node->pipes[left_pipe][write_fd]);
+	dup2(node->pipes[right_pipe][write_fd], STDOUT_FILENO);
+	close(node->pipes[right_pipe][write_fd]);
+	close(node->pipes[right_pipe][read_fd]);
 }
 
-int open_outfile (int proc_idx, t_input * node)
+void	fd_dup_for_last_cmd(int proc_idx, t_input *node)
 {
-	int tmp;
+	int	left_pipe;
 
-    tmp = failed;
-	if (node->here_doc_flag == 0)
-		tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (node->here_doc_flag == 1)
-		tmp = open(node->file_path[proc_idx + 2], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	return tmp;
+	left_pipe = proc_idx - 1;
+	dup2(node->pipes[left_pipe][read_fd], STDIN_FILENO);
+	close(node->pipes[left_pipe][read_fd]);
+	close(node->pipes[left_pipe][write_fd]);
+	dup2(node->outfile_fd, STDOUT_FILENO);
+	close(node->outfile_fd);
 }
 
-void last_cmd(int proc_idx, t_input * node)
+void	pipes_fd_setting(int total_pipes, int proc_idx, t_input *node)
 {
-    int left_pipe;
-
-	left_pipe= proc_idx -1;
-	
-    dup2(node->pipes[left_pipe][read_fd], STDIN_FILENO);
-    close(node->pipes[left_pipe][read_fd]);
-    close(node->pipes[left_pipe][write_fd]);
-    dup2(node->outfile_fd, STDOUT_FILENO);
-    close(node->outfile_fd);
-}
-
-void pipes_fd_setting (int total_pipes, int proc_idx, t_input * node)
-{
-    if (proc_idx == 0)
-        first_cmd(proc_idx, node);
-    else if (proc_idx == total_pipes)
-        last_cmd(proc_idx, node);
-    else
-        middle_cmd(proc_idx, node);
+	if (proc_idx == 0)
+		fd_dup_for_first_cmd(proc_idx, node);
+	else if (proc_idx == total_pipes)
+		fd_dup_for_last_cmd(proc_idx, node);
+	else
+		fd_dup_for_middle_cmd(proc_idx, node);
 }

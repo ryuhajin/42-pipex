@@ -5,10 +5,26 @@ CFLAG = -Wall -Werror -Wextra -g $(SANITIZE)
 
 NAME = pipex
 
-SRCS = main.c input.c fork.c pipe.c init.c print.c
+SRCS = main.c \
+		init.c \
+		input.c \
+		fork.c \
+		pipe.c pipe2.c \
+		check_argv.c\
+		access.c \
+		free.c \
+		print.c
 
-SRCS_BONUS = ./bonus/main_bonus.c ./bonus/init_bonus.c ./bonus/input_bonus.c ./bonus/fork_bonus.c \
-			./bonus/pipe_bonus.c ./bonus/read_line_bonus.c ./bonus/read_line_bonus2.c \
+SRCS_BONUS = ./bonus/main_bonus.c \
+			./bonus/init_bonus.c \
+			./bonus/input_bonus.c \
+			./bonus/fork_bonus.c \
+			./bonus/pipe_bonus.c ./bonus/pipe_bonus2.c \
+			./bonus/read_line_bonus.c ./bonus/read_line_bonus2.c \
+			./bonus/check_argv_bonus.c \
+			./bonus/here_doc_bonus.c \
+			./bonus/access_bonus.c \
+			./bonus/free_bonus.c \
 			./bonus/print_bonus.c
 
 OBJS = $(SRCS:.c=.o)

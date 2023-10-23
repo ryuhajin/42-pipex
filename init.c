@@ -3,75 +3,104 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dayou <dayou@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 17:05:55 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/19 14:26:15 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/23 21:18:39 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
 #include "./libft/libft.h"
+#include "pipex.h"
+#include <stdio.h> // 삭제하기
 
-int make_pipes (int cmd_cnt, t_input * node)
+int	argv_split(int argc, char **argv, t_input *node)
 {
-    int total_pipes;
-    int i;
+	char	**temp;
+	int		i;
+	int		j;
 
-    total_pipes = cmd_cnt -1; //pipe는 cmd보다 항상 1개 작다
-    node->pipes = (int **)malloc(sizeof(int *) * total_pipes);
-    if (node->pipes == NULL)
-	{	printf("node->pipex?\n");
-		return failed;
+	i = 1;
+	j = 0;
+	if (node->here_doc_flag == 1)
+	{
+		node->input_str[0] = node->here_doc;
+		i = 3;
+		j = 1;
 	}
-	i = 0;
-    while (i < total_pipes)
-    {
-        node->pipes[i] = (int *)malloc(sizeof(int) * 2);
-		if (node->pipes[i] == NULL)
-			return failed;
-        if (pipe(node->pipes[i]) == failed)
-            return failed;
-        i++;
-    }
-    return success;
+	while (i < argc)
+	{
+		temp = ft_split(argv[i], ' ');
+		if (temp == NULL)
+			return (failed);
+		node->input_str[j] = temp;
+		i++;
+		j++;
+	}
+	return (success);
 }
 
-int malloc_for_node (t_input ** node, int argc, int cmd_cnt, int here_doc_flag)
+int	make_pipes(int cmd_cnt, t_input *node)
+{
+	int	total_pipes;
+	int	i;
+
+	total_pipes = cmd_cnt - 1;
+	if (total_pipes == 0)
+		return (success);
+	node->pipes = (int **)malloc(sizeof(int *) * total_pipes);
+	if (node->pipes == NULL)
+		return (failed);
+	i = 0;
+	while (i < total_pipes)
+	{
+		node->pipes[i] = (int *)malloc(sizeof(int) * 2);
+		if (node->pipes[i] == NULL)
+			return (failed);
+		if (pipe(node->pipes[i]) == failed)
+			return (failed);
+		i++;
+	}
+	return (success);
+}
+
+int	malloc_for_node(t_input **node, int argc, int cmd_cnt, int here_doc_flag)
 {
 	(*node) = (t_input *)malloc(sizeof(t_input) * 1);
 	if ((*node) == NULL)
-		return failed;
+		return (failed);
 	(*node)->file_path = (char **)malloc(sizeof(char *) * argc);
 	if ((*node)->file_path == NULL)
-		return failed;
-	(*node)->file_path[argc -1 -here_doc_flag] = NULL;
+		return (failed);
+	(*node)->file_path[argc - 1 - here_doc_flag] = NULL;
 	(*node)->input_str = malloc(sizeof(char *) * argc);
 	if ((*node)->input_str == NULL)
-		return failed;
-	(*node)->input_str[argc -1 -here_doc_flag] = NULL;
+		return (failed);
+	(*node)->input_str[argc - 1 - here_doc_flag] = NULL;
 	if (make_pipes(cmd_cnt, (*node)) == failed)
-		return failed;
-	(*node)->here_doc_flag = (int *)malloc(sizeof(int) * 1);
-	if ((*node)->here_doc_flag == NULL)
-		return failed;
-	*((*node)->here_doc_flag) = here_doc_flag;
-	return success;
+		return (failed);
+	if (here_doc_flag == 1)
+	{
+		(*node)->here_doc = (char **)malloc(sizeof(char *) * 2);
+		if ((*node)->here_doc == NULL)
+			return (failed);
+		(*node)->here_doc[1] = NULL;
+	}
+	(*node)->here_doc_flag = here_doc_flag;
+	return (success);
 }
 
-int init_input_node (t_input * node, int argc, char ** argv, char ** envp)
+int	init_input_node(t_input *node, int argc, char **argv, char **envp)
 {
-	int last_input_idx;
+	int	last_input_idx;
 
-	last_input_idx = argc -2 -*(node->here_doc_flag); //here_doc 요주의
-	printf("last_input_idx = %d\n", last_input_idx);
+	last_input_idx = argc - 2 - node->here_doc_flag;
 	(node)->env_path = ft_split(search_path_from_env(envp), ':');
-	if((node)->env_path == NULL)
-		return failed;
-	if (argv_split(argc, argv, (node)->input_str) == failed)
-		return failed;
-	if (make_file_path(node, last_input_idx, 0) == failed)
-		return failed;
-	return success;
+	if ((node)->env_path == NULL)
+		return (failed);
+	if (argv_split(argc, argv, node) == failed)
+		return (failed);
+	if (make_file_path(node, last_input_idx, -1) == failed)
+		return (failed);
+	return (success);
 }
-

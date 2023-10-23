@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:00:49 by dayou             #+#    #+#             */
-/*   Updated: 2023/05/11 22:28:46 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/23 21:06:57 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,6 @@
 # include <limits.h>
 # include <stdlib.h>
 # include <unistd.h>
-
-typedef struct s_list
-{
-void *content;
-struct s_list *next;
-} t_list;
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);

@@ -1,5 +1,5 @@
 ***** ./pipex (no argc) -> 정상 종료
-***** 릭 체크 확인하기!!!
+***** 릭 체크 확인하기!!! <- 마지막에 하자
 
 <mendetory>
 
@@ -159,7 +159,6 @@ bash: <infile cat | cat | cat >outfile
 2. 파이프가 홀수 일때 확인
 bash: <infile cat | cat | cat | cat >outfile
 
-
 3. here_doc 확인
 bash: <<test cat | cat >> outfile
 
@@ -181,6 +180,8 @@ bash:<<nolim cat | cat >> outfile
 9. here_doc을 입력했을때 outfile 이 있으면 뒤에 잘 써지나 확인
 
 10. here_doc을 입력했을때 outfile 이 없으면 생성되나 확인
+
+11. here_doc tmp 파일
 
 
 
