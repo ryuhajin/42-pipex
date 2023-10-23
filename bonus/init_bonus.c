@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 17:05:55 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/23 20:41:29 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/23 23:39:12 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,11 @@ int	malloc_for_node(t_input **node, int argc, int cmd_cnt, int here_doc_flag)
 	(*node) = (t_input *)malloc(sizeof(t_input) * 1);
 	if ((*node) == NULL)
 		return (failed);
-	(*node)->file_path = (char **)malloc(sizeof(char *) * argc);
+	(*node)->file_path = (char **)malloc(sizeof(char *) * (argc - here_doc_flag));
 	if ((*node)->file_path == NULL)
 		return (failed);
 	(*node)->file_path[argc - 1 - here_doc_flag] = NULL;
-	(*node)->input_str = malloc(sizeof(char *) * argc);
+	(*node)->input_str = malloc(sizeof(char *) * (argc - here_doc_flag));
 	if ((*node)->input_str == NULL)
 		return (failed);
 	(*node)->input_str[argc - 1 - here_doc_flag] = NULL;
@@ -92,10 +92,15 @@ int	malloc_for_node(t_input **node, int argc, int cmd_cnt, int here_doc_flag)
 
 int	init_input_node(t_input *node, int argc, char **argv, char **envp)
 {
-	int	last_input_idx;
+	int		last_input_idx;
+	char	*temp_env_path;
 
 	last_input_idx = argc - 2 - node->here_doc_flag;
-	(node)->env_path = ft_split(search_path_from_env(envp), ':');
+	temp_env_path = search_path_from_env(envp);
+	if (temp_env_path == NULL)
+		(node)->env_path = ft_split("", ':');
+	else
+		(node)->env_path = ft_split(temp_env_path, ':');
 	if ((node)->env_path == NULL)
 		return (failed);
 	if (argv_split(argc, argv, node) == failed)
