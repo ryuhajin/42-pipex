@@ -13,7 +13,6 @@ SRCS = main.c \
 		check_argv.c\
 		access.c \
 		free.c \
-		print.c
 
 SRCS_BONUS = ./bonus/main_bonus.c \
 			./bonus/init_bonus.c \
@@ -25,7 +24,6 @@ SRCS_BONUS = ./bonus/main_bonus.c \
 			./bonus/here_doc_bonus.c \
 			./bonus/access_bonus.c \
 			./bonus/free_bonus.c \
-			./bonus/print_bonus.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/23 20:59:49 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/25 17:08:45 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,5 @@ void		pipes_fd_setting(int total_pipes, int proc_idx, t_input *node);
 void		close_fd(int total_pipes, int proc_idx, t_input *node);
 void		close_fd_all(int total_pipes, t_input *node);
 void		child_pipe_setting(t_input *node, int cmd_cnt, int proc_idx);
-
-//print_bonus.c
-void		argv_print(t_input *node);
-void		path_print(t_input *node);
-void		file_path_print(t_input *node);
 
 #endif

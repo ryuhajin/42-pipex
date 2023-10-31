@@ -6,7 +6,7 @@
 /*   By: dayou <da1712@student.42seoul.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 14:57:37 by dayou             #+#    #+#             */
-/*   Updated: 2023/10/23 20:39:01 by dayou            ###   ########.fr       */
+/*   Updated: 2023/10/25 17:12:52 by dayou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,10 +136,5 @@ char		*ft_strdup_gnl(char *s1);
 char		*ft_strjoin_gnl(char *s1, char *s2, ssize_t size);
 size_t		ft_strlcpy_gnl(char *dest, char *src);
 ssize_t		find_newline(char *buff, ssize_t *size);
-
-//print_bonus.c
-void		argv_print(t_input *node);
-void		path_print(t_input *node);
-void		file_path_print(t_input *node);
 
 #endif
